@@ -1,6 +1,8 @@
 
 # Remove Silence From Audio
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/NeuralFalconYT/Remove-Silence-From-Audio/blob/main/Remove_Silence_From_Audio.ipynb) <br>
+
 A simple tool to remove silent parts from audio files using Python.
 
 ## 🔧 Requirements

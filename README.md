@@ -6,7 +6,6 @@
 A simple tool to remove silent parts from audio files using Python.
 
 ## 🔧 Requirements
-
 Make sure you have Python installed (preferably Python 3.8 or above).
 
 ## 🚀 How to Run
@@ -44,4 +43,4 @@ python app.py --share
 ---
 
 Made with 💻 by [NeuralFalconYT](https://github.com/NeuralFalconYT)
-```
+

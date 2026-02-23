@@ -42,5 +42,9 @@ python app.py --share
 
 ---
 
+
+![Screenshot 2026-02-23 185747](https://github.com/user-attachments/assets/a2145b11-71fc-4b10-a657-4f715ec4e68b)
+
+
 Made with 💻 by [NeuralFalconYT](https://github.com/NeuralFalconYT)
 

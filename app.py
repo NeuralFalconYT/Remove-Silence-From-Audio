@@ -127,12 +127,11 @@ def convert_to_wav(audio_path):
     return None
 
 
-# ─── Method 1: PyDub (Default) ────────────────────────────────────────────────
+# ─── Method 1: Super Strict (PyDub) ──────────────────────────────────────────
 
 def remove_silence_pydub(file_path, minimum_silence=50):
     sound = AudioSegment.from_file(file_path)
 
-    # Try with default threshold
     audio_chunks = split_on_silence(
         sound,
         min_silence_len=100,
@@ -140,7 +139,6 @@ def remove_silence_pydub(file_path, minimum_silence=50):
         keep_silence=minimum_silence
     )
 
-    # Fallback: dynamic threshold if audio is quieter
     if not audio_chunks:
         dynamic_thresh = sound.dBFS - 16
         audio_chunks = split_on_silence(
@@ -167,26 +165,24 @@ def remove_silence_pydub(file_path, minimum_silence=50):
     return output_path
 
 
-# ─── Method 2: Silero VAD (AI) ────────────────────────────────────────────────
+# ─── Method 2: Human Speech Only (Silero VAD) ────────────────────────────────
 
 def remove_silence_silero(file_path, min_silence_duration_ms=100, padding_ms=30):
     """
-    Uses Silero VAD to detect speech segments and removes all non-speech parts.
-    Hard cuts - no crossfade. Maximum silence removal for short-form content.
+    Uses Silero VAD to detect human speech only.
+    Removes everything that is not speech — breaths, noise, dead air.
     """
     global SILERO_MODEL, SILERO_UTILS
 
     if SILERO_MODEL is None:
         load_silero_model()
         if SILERO_MODEL is None:
-            raise RuntimeError("Silero VAD model could not be loaded. Try the Default method.")
+            raise RuntimeError("AI model could not be loaded. Please try Super Strict mode.")
 
     (get_speech_timestamps, save_audio, read_audio, VADIterator, collect_chunks) = SILERO_UTILS
 
-    # Read audio at 16kHz mono (required by Silero)
     wav = read_audio(file_path, sampling_rate=16000)
 
-    # Get speech timestamps
     speech_timestamps = get_speech_timestamps(
         wav,
         SILERO_MODEL,
@@ -198,27 +194,20 @@ def remove_silence_silero(file_path, min_silence_duration_ms=100, padding_ms=30)
     )
 
     if not speech_timestamps:
-        # No speech detected — return original
         output_path = clean_file_name(file_path)
         sound = AudioSegment.from_file(file_path)
         sound.export(output_path, format="wav")
         return output_path
 
-    # Load original audio with pydub to preserve quality
     original_audio = AudioSegment.from_file(file_path)
     original_sr = original_audio.frame_rate
-
-    # Calculate ratio between original sample rate and 16kHz
     sr_ratio = original_sr / 16000.0
 
-    # Concatenate speech segments (hard cut)
     combined = AudioSegment.empty()
     for ts in speech_timestamps:
-        # Convert 16kHz sample positions to milliseconds in original audio
         start_ms = int((ts['start'] * sr_ratio) / original_sr * 1000)
         end_ms = int((ts['end'] * sr_ratio) / original_sr * 1000)
 
-        # Clamp to audio bounds
         start_ms = max(0, start_ms)
         end_ms = min(len(original_audio), end_ms)
 
@@ -262,14 +251,13 @@ def process_audio(audio_file, seconds, method):
     try:
         before = calculate_duration(audio_file)
 
-        if method == "Use AI (Silero VAD)":
+        if method == "Human Speech Only (AI)":
             output_audio_file = remove_silence_silero(
                 audio_file,
                 min_silence_duration_ms=max(keep_silence, 100),
                 padding_ms=keep_silence
             )
         else:
-            # Default: PyDub
             output_audio_file = remove_silence_pydub(
                 audio_file,
                 minimum_silence=keep_silence
@@ -282,10 +270,10 @@ def process_audio(audio_file, seconds, method):
         percent = (removed / before * 100) if before > 0 else 0
 
         text = (
-            f"⏱️ Original Duration: {before:.2f}s\n"
-            f"✂️ New Duration: {after:.2f}s\n"
-            f"🔇 Silence Removed: {removed:.2f}s ({percent:.1f}%)\n"
-            f"🛠️ Method: {method}"
+            f"Original Duration: {before:.2f}s\n"
+            f"New Duration: {after:.2f}s\n"
+            f"Silence Removed: {removed:.2f}s ({percent:.1f}%)\n"
+            f"Method: {method}"
         )
 
         return output_audio_file, output_audio_file, text
@@ -318,16 +306,6 @@ def ui():
     button.primary:hover {
         background-color: #1e40af !important;
     }
-
-    .method-info {
-        background: #f0f9ff;
-        border: 1px solid #bae6fd;
-        border-radius: 8px;
-        padding: 12px;
-        margin-top: 8px;
-        font-size: 0.9em;
-        color: #0369a1;
-    }
     """
 
     with gr.Blocks(theme=theme, css=css) as demo:
@@ -339,9 +317,6 @@ def ui():
             </h1>
             <p style="font-size:1.05em; color:#555; margin:0 0 10px;">
                 Upload an audio file to remove silent parts — perfect for YT Shorts, TikTok & Reels.
-            </p>
-            <p style="font-size:0.85em; color:#777; margin:0 0 6px;">
-                Choose <b>Default</b> for fast processing or <b>Use AI</b> for smarter voice detection.
             </p>
             <p style="font-size:0.8em; color:#999;">
                 ⚠️ Please don't upload copyrighted content — it can take this Space offline.
@@ -364,29 +339,21 @@ def ui():
                 )
 
                 method_choice = gr.Radio(
-                    choices=["Default", "Use AI (Silero VAD)"],
-                    value="Default",
-                    label="Method",
-                    info="Default = fast PyDub | Use AI = smarter ML-based voice detection"
+                    choices=["Super Strict", "Human Speech Only (AI)"],
+                    value="Super Strict",
+                    label="Mode",
+                    info="Super Strict = removes ALL quiet parts | Human Speech Only = AI keeps only voice, removes breaths & noise"
                 )
 
                 silence_threshold = gr.Number(
                     label="Keep Silence Upto (in seconds)",
-                    value=0.05,
-                    info="How much silence to keep between words (lower = more trimmed)"
+                    value=0.05
                 )
 
                 submit_btn = gr.Button(
                     "🔇 Remove Silence",
                     variant="primary"
                 )
-
-                gr.HTML("""
-                <div class="method-info">
-                    <b>💡 Tip:</b> For YT Shorts / TikTok, use <b>AI mode</b> with 0.03-0.05s silence — 
-                    it removes more dead air and keeps your video tight!
-                </div>
-                """)
 
             with gr.Column(scale=1):
                 audio_output = gr.Audio(label="Play Audio")

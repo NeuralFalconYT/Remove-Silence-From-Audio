@@ -197,7 +197,6 @@ def remove_silence_silero(file_path, min_silence_duration_ms=100, padding_ms=30)
 def process_audio(audio_file, seconds, method):
     if audio_file is None:
         return None, None, ""
-
     if not os.path.exists(audio_file):
         return None, None, ""
 
@@ -233,7 +232,6 @@ def process_audio(audio_file, seconds, method):
         removed = before - after
         percent = (removed / before * 100) if before > 0 else 0
 
-        # Format durations nicely
         def fmt(s):
             m = int(s // 60)
             sec = s % 60
@@ -241,244 +239,407 @@ def process_audio(audio_file, seconds, method):
                 return f"{m}m {sec:.1f}s"
             return f"{sec:.2f}s"
 
+        mode_label = "SUPER STRICT" if method == "Super Strict" else "HUMAN SPEECH (AI)"
+
         result_html = f"""
-<div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:8px;">
-    <div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%); border-radius:12px; padding:16px; text-align:center; color:white;">
-        <div style="font-size:0.75em; opacity:0.85; text-transform:uppercase; letter-spacing:1px;">Original</div>
-        <div style="font-size:1.5em; font-weight:700; margin-top:4px;">{fmt(before)}</div>
+<div style="margin-top:14px; border:1px solid #00ffe720; border-radius:10px; overflow:hidden; background:#050d14; position:relative;">
+    <div style="position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,#00ffe7,transparent);"></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr;">
+        <div style="padding:22px 16px; text-align:center; border-right:1px solid #00ffe715;">
+            <div style="font-size:9px; letter-spacing:0.22em; color:#1e5550; text-transform:uppercase; margin-bottom:10px; font-family:'Courier New',monospace;">Original</div>
+            <div style="font-size:22px; font-weight:400; color:#4a9e9a; letter-spacing:0.04em; font-family:'Courier New',monospace;">{fmt(before)}</div>
+        </div>
+        <div style="padding:22px 16px; text-align:center; border-right:1px solid #00ffe715; background:#081820;">
+            <div style="font-size:9px; letter-spacing:0.22em; color:#1e5550; text-transform:uppercase; margin-bottom:10px; font-family:'Courier New',monospace;">New</div>
+            <div style="font-size:22px; font-weight:400; color:#00ffe7; letter-spacing:0.04em; font-family:'Courier New',monospace;">{fmt(after)}</div>
+        </div>
+        <div style="padding:22px 16px; text-align:center;">
+            <div style="font-size:9px; letter-spacing:0.22em; color:#1e5550; text-transform:uppercase; margin-bottom:10px; font-family:'Courier New',monospace;">Removed</div>
+            <div style="font-size:22px; font-weight:400; color:#ff4d6d; letter-spacing:0.04em; font-family:'Courier New',monospace;">{percent:.1f}%</div>
+            <div style="font-size:11px; color:#1e4a48; margin-top:4px; font-family:'Courier New',monospace;">{fmt(removed)}</div>
+        </div>
     </div>
-    <div style="background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%); border-radius:12px; padding:16px; text-align:center; color:white;">
-        <div style="font-size:0.75em; opacity:0.85; text-transform:uppercase; letter-spacing:1px;">New</div>
-        <div style="font-size:1.5em; font-weight:700; margin-top:4px;">{fmt(after)}</div>
+    <div style="padding:8px 16px; background:#020a10; border-top:1px solid #00ffe710; text-align:right;">
+        <span style="font-family:'Courier New',monospace; font-size:9px; color:#1a4040; letter-spacing:0.18em; text-transform:uppercase;">MODE // {mode_label}</span>
     </div>
-    <div style="background:linear-gradient(135deg,#eb3349 0%,#f45c43 100%); border-radius:12px; padding:16px; text-align:center; color:white;">
-        <div style="font-size:0.75em; opacity:0.85; letter-spacing:1px;">REMOVED</div>
-        <div style="font-size:1.5em; font-weight:700; margin-top:4px;">{percent:.1f}%</div>
-        <div style="font-size:0.7em; opacity:0.8; margin-top:2px;">{fmt(removed)}</div>
-    </div>
-</div>
-<div style="text-align:center; margin-top:10px; font-size:0.8em; color:#888;">
-    Mode: {method}
 </div>
 """
         return output_audio_file, output_audio_file, result_html
 
     except Exception as e:
-        return None, None, f"<p style='color:#ef4444;'>Error: {str(e)}</p>"
+        return None, None, f"<p style='color:#ff4d6d; font-family:monospace; font-size:12px; margin-top:12px;'>ERROR: {str(e)}</p>"
 
 
 # ─── UI ───────────────────────────────────────────────────────────────────────
 
 def ui():
     theme = gr.themes.Base(
-        primary_hue=gr.themes.colors.indigo,
-        secondary_hue=gr.themes.colors.purple,
+        primary_hue=gr.themes.colors.slate,
+        secondary_hue=gr.themes.colors.slate,
         neutral_hue=gr.themes.colors.slate,
-        font=[gr.themes.GoogleFont("Inter"), "system-ui", "sans-serif"],
+        font=[gr.themes.GoogleFont("Share Tech Mono"), "monospace"],
+        font_mono=[gr.themes.GoogleFont("Share Tech Mono"), "monospace"],
     ).set(
-        body_background_fill="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
-        body_background_fill_dark="linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
-        block_background_fill="rgba(255,255,255,0.03)",
-        block_background_fill_dark="rgba(255,255,255,0.03)",
+        body_background_fill="#030b11",
+        body_background_fill_dark="#030b11",
+        block_background_fill="#050d16",
+        block_background_fill_dark="#050d16",
         block_border_width="1px",
-        block_border_color="rgba(255,255,255,0.08)",
-        block_border_color_dark="rgba(255,255,255,0.08)",
-        block_radius="16px",
-        block_label_text_color="#e2e8f0",
-        block_label_text_color_dark="#e2e8f0",
-        block_title_text_color="#f1f5f9",
-        block_title_text_color_dark="#f1f5f9",
-        body_text_color="#e2e8f0",
-        body_text_color_dark="#e2e8f0",
-        body_text_color_subdued="#94a3b8",
-        body_text_color_subdued_dark="#94a3b8",
-        input_background_fill="rgba(255,255,255,0.06)",
-        input_background_fill_dark="rgba(255,255,255,0.06)",
-        input_border_color="rgba(255,255,255,0.12)",
-        input_border_color_dark="rgba(255,255,255,0.12)",
-        button_primary_background_fill="linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        button_primary_background_fill_dark="linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-        button_primary_background_fill_hover="linear-gradient(135deg, #5a6fd6 0%, #6a4292 100%)",
-        button_primary_background_fill_hover_dark="linear-gradient(135deg, #5a6fd6 0%, #6a4292 100%)",
-        button_primary_text_color="#ffffff",
-        button_primary_text_color_dark="#ffffff",
-        button_primary_border_color="rgba(255,255,255,0.15)",
-        button_primary_border_color_dark="rgba(255,255,255,0.15)",
+        block_border_color="#00ffe720",
+        block_border_color_dark="#00ffe720",
+        block_radius="10px",
+        block_shadow="none",
+        block_shadow_dark="none",
+        block_label_background_fill="#050d16",
+        block_label_background_fill_dark="#050d16",
+        block_label_border_width="0px",
+        block_label_text_color="#2a6e6a",
+        block_label_text_color_dark="#2a6e6a",
+        block_label_text_size="11px",
+        block_title_text_color="#3a8e8a",
+        block_title_text_color_dark="#3a8e8a",
+        block_title_text_size="11px",
+        body_text_color="#7adbd6",
+        body_text_color_dark="#7adbd6",
+        body_text_color_subdued="#2a6e6a",
+        body_text_color_subdued_dark="#2a6e6a",
+        body_text_size="13px",
+        input_background_fill="#020a10",
+        input_background_fill_dark="#020a10",
+        input_background_fill_focus="#050f18",
+        input_background_fill_focus_dark="#050f18",
+        input_border_color="#00ffe725",
+        input_border_color_dark="#00ffe725",
+        input_border_color_focus="#00ffe760",
+        input_border_color_focus_dark="#00ffe760",
+        input_border_width="1px",
+        input_radius="8px",
+        input_shadow="none",
+        input_shadow_dark="none",
+        input_text_size="13px",
+        input_placeholder_color="#1e5550",
+        input_placeholder_color_dark="#1e5550",
+        button_primary_background_fill="#00ffe7",
+        button_primary_background_fill_dark="#00ffe7",
+        button_primary_background_fill_hover="#33fff0",
+        button_primary_background_fill_hover_dark="#33fff0",
+        button_primary_text_color="#020a10",
+        button_primary_text_color_dark="#020a10",
+        button_primary_border_color="#00ffe7",
+        button_primary_border_color_dark="#00ffe7",
+        button_secondary_background_fill="#050d16",
+        button_secondary_background_fill_dark="#050d16",
+        button_secondary_background_fill_hover="#081820",
+        button_secondary_background_fill_hover_dark="#081820",
+        button_secondary_text_color="#3a8e8a",
+        button_secondary_text_color_dark="#3a8e8a",
+        button_secondary_border_color="#00ffe720",
+        button_secondary_border_color_dark="#00ffe720",
+        button_large_radius="8px",
+        button_large_text_size="12px",
+        button_large_padding="14px 28px",
+        slider_color="#00ffe7",
+        slider_color_dark="#00ffe7",
+        checkbox_background_color="#020a10",
+        checkbox_background_color_dark="#020a10",
+        checkbox_border_color="#00ffe725",
+        checkbox_border_color_dark="#00ffe725",
+        checkbox_border_color_selected="#00ffe7",
+        checkbox_border_color_selected_dark="#00ffe7",
+        checkbox_label_background_fill="#020a10",
+        checkbox_label_background_fill_dark="#020a10",
+        checkbox_label_background_fill_selected="#061418",
+        checkbox_label_background_fill_selected_dark="#061418",
+        checkbox_label_border_color="#00ffe720",
+        checkbox_label_border_color_dark="#00ffe720",
+        checkbox_label_border_color_hover="#00ffe750",
+        checkbox_label_border_color_hover_dark="#00ffe750",
+        checkbox_label_text_color="#2a6e6a",
+        checkbox_label_text_color_dark="#2a6e6a",
+        checkbox_label_text_color_selected="#00ffe7",
+        checkbox_label_text_color_selected_dark="#00ffe7",
     )
 
     css = """
-    /* Overall page */
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
     .gradio-container {
-        max-width: 1000px !important;
-        margin: auto !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 28px !important;
+        box-sizing: border-box !important;
+        background: #030b11 !important;
     }
 
-    /* Glass card effect */
-    .glass-card {
-        background: rgba(255, 255, 255, 0.04) !important;
-        backdrop-filter: blur(20px) !important;
-        -webkit-backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 20px !important;
-        padding: 24px !important;
+    /* Scanline effect */
+    body {
+        background: #030b11 !important;
+    }
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 3px,
+            rgba(0,255,231,0.012) 3px,
+            rgba(0,255,231,0.012) 4px
+        );
+        pointer-events: none;
+        z-index: 9999;
     }
 
-    /* Primary button */
-    button.primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        border: 1px solid rgba(255,255,255,0.2) !important;
-        border-radius: 12px !important;
-        padding: 14px 24px !important;
-        font-size: 1.1em !important;
-        font-weight: 600 !important;
-        color: white !important;
-        box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4) !important;
-        transition: all 0.3s ease !important;
-    }
-
-    button.primary:hover {
-        box-shadow: 0 6px 30px rgba(102, 126, 234, 0.6) !important;
-        transform: translateY(-1px) !important;
-    }
-
-    /* Radio buttons styling */
-    .gr-radio {
-        border-radius: 12px !important;
-    }
-
-    /* Mode selector cards */
-    .mode-card {
-        background: rgba(255,255,255,0.04);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 12px;
-        padding: 14px 18px;
-        margin: 6px 0;
-        transition: all 0.2s ease;
-    }
-
-    .mode-card:hover {
-        border-color: rgba(102, 126, 234, 0.5);
-        background: rgba(102, 126, 234, 0.08);
-    }
-
-    /* Footer */
-    .footer-text {
+    /* ── Header — centered ── */
+    .site-header {
+        padding: 64px 0 52px;
+        border-bottom: 1px solid #00ffe715;
+        margin-bottom: 48px;
         text-align: center;
-        color: rgba(255,255,255,0.4);
-        font-size: 0.8em;
-        margin-top: 20px;
-        padding: 16px;
     }
 
-    .footer-text a {
-        color: rgba(102, 126, 234, 0.8);
-        text-decoration: none;
+    .header-eyebrow {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.35em;
+        color: #1a4a48;
+        text-transform: uppercase;
+        margin-bottom: 20px;
     }
 
-    .footer-text a:hover {
-        color: #667eea;
+    .header-title {
+        font-family: 'Orbitron', monospace;
+        font-size: clamp(30px, 5vw, 60px);
+        font-weight: 900;
+        color: #cef5f3;
+        letter-spacing: 0.08em;
+        line-height: 1.0;
+        margin-bottom: 16px;
     }
 
-    /* Hide dark mode toggle */
-    .dark-mode-toggle { display: none !important; }
+    .header-title span {
+        color: #00ffe7;
+    }
 
-    /* Audio component */
-    audio { border-radius: 10px !important; }
+    .header-sub {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 13px;
+        color: #2a7a74;
+        margin-bottom: 28px;
+        letter-spacing: 0.08em;
+    }
+
+    .header-badges {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hbadge {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        padding: 5px 16px;
+        border: 1px solid #00ffe730;
+        color: #00ffe790;
+        border-radius: 2px;
+        background: #00ffe708;
+        text-transform: uppercase;
+    }
+
+    /* ── Section labels ── */
+    .section-tag {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 0.28em;
+        color: #1a4a48;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #00ffe710;
+    }
+
+    /* ── Radio ── */
+    .gr-radio-group .wrap { gap: 8px !important; }
+    .gr-radio-group label {
+        border-radius: 6px !important;
+        padding: 10px 18px !important;
+        font-size: 12px !important;
+        letter-spacing: 0.1em !important;
+        font-family: 'Share Tech Mono', monospace !important;
+        transition: all 0.15s !important;
+        text-transform: uppercase !important;
+    }
+
+    /* ── Submit button ── */
+    .submit-row button {
+        width: 100% !important;
+        height: 54px !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.28em !important;
+        text-transform: uppercase !important;
+        border-radius: 6px !important;
+        font-family: 'Orbitron', monospace !important;
+    }
+
+    /* ── Divider ── */
+    .hdivider {
+        height: 1px;
+        background: #00ffe710;
+        margin: 26px 0;
+    }
+
+    /* ── Result placeholder ── */
+    .result-empty {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 80px;
+        border: 1px dashed #00ffe718;
+        border-radius: 8px;
+        margin-top: 14px;
+    }
+
+    .result-empty p {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 11px;
+        color: #174040;
+        letter-spacing: 0.14em;
+        text-align: center;
+        text-transform: uppercase;
+    }
+
+    /* ── Footer ── */
+    .site-footer {
+        border-top: 1px solid #00ffe710;
+        padding: 22px 0 44px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 44px;
+    }
+
+    .footer-l {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 10px;
+        color: #1a4040;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+    }
+
+    .footer-r a {
+        font-family: 'Share Tech Mono', monospace;
+        font-size: 10px;
+        color: #2a6060;
+        letter-spacing: 0.1em;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        text-transform: uppercase;
+    }
+
+    .gr-row { gap: 24px !important; }
+    #result-html > div { margin: 0 !important; }
     """
 
-    with gr.Blocks(theme=theme, css=css, title="Remove Silence From Audio") as demo:
+    EMPTY_RESULT = """
+<div class="result-empty">
+    <p>// upload audio &rarr; execute</p>
+</div>
+"""
 
-        # ─── Header ──────────────────────────────────────────────────────
+    with gr.Blocks(theme=theme, css=css, title="Remove Silence") as demo:
+
         gr.HTML("""
-        <div style="text-align:center; padding:40px 20px 20px;">
-            <div style="font-size:3.5em; margin-bottom:8px;">
-                <span style="background: linear-gradient(135deg, #667eea, #764ba2, #f093fb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight:800;">
-                    Remove Silence
-                </span>
-            </div>
-            <p style="font-size:1.15em; color:#94a3b8; margin:0 0 8px; font-weight:300;">
-                Drop your audio. Get it tight. Perfect for Shorts, TikTok & Reels.
-            </p>
-            <div style="display:inline-flex; gap:8px; margin-top:12px; flex-wrap:wrap; justify-content:center;">
-                <span style="background:rgba(102,126,234,0.15); border:1px solid rgba(102,126,234,0.3); color:#a5b4fc; padding:4px 12px; border-radius:20px; font-size:0.8em;">100% Free</span>
-                <span style="background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:#6ee7b7; padding:4px 12px; border-radius:20px; font-size:0.8em;">No Sign-up</span>
-                <span style="background:rgba(244,63,94,0.15); border:1px solid rgba(244,63,94,0.3); color:#fda4af; padding:4px 12px; border-radius:20px; font-size:0.8em;">AI Powered</span>
+        <div class="site-header">
+            <div class="header-eyebrow">// audio processing tool v2.0 //</div>
+            <div class="header-title">REMOVE <span>SILENCE</span></div>
+            <div class="header-sub">Drop your audio &nbsp;&bull;&nbsp; get it tight &nbsp;&bull;&nbsp; perfect for Shorts, TikTok &amp; Reels</div>
+            <div class="header-badges">
+                <span class="hbadge">100% free</span>
+                <span class="hbadge">no sign-up</span>
+                <span class="hbadge">ai powered</span>
             </div>
         </div>
         """)
 
-        # ─── Main Content ────────────────────────────────────────────────
         with gr.Row(equal_height=False):
+
             with gr.Column(scale=1):
-                gr.HTML('<div style="color:#e2e8f0; font-weight:600; font-size:1em; margin-bottom:8px;">Upload Audio</div>')
+                gr.HTML('<div class="section-tag">[ 01 ] &nbsp; upload</div>')
                 audio_input = gr.Audio(
                     label="",
                     type="filepath",
                     sources=["upload", "microphone"],
-                    show_label=False
+                    show_label=False,
                 )
 
-                gr.HTML("""
-                <div style="color:#e2e8f0; font-weight:600; font-size:1em; margin:16px 0 10px;">Choose Mode</div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
-                    <div style="background:rgba(102,126,234,0.08); border:1px solid rgba(102,126,234,0.25); border-radius:12px; padding:14px; text-align:center;">
-                        <div style="font-size:1.4em;">&#9889;</div>
-                        <div style="color:#a5b4fc; font-weight:600; font-size:0.85em; margin-top:4px;">Super Strict</div>
-                        <div style="color:#64748b; font-size:0.72em; margin-top:3px;">Removes ALL quiet parts<br>breaths, noise, everything</div>
-                    </div>
-                    <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:12px; padding:14px; text-align:center;">
-                        <div style="font-size:1.4em;">&#129504;</div>
-                        <div style="color:#6ee7b7; font-weight:600; font-size:0.85em; margin-top:4px;">Human Speech Only</div>
-                        <div style="color:#64748b; font-size:0.72em; margin-top:3px;">AI keeps only voice<br>removes breaths & noise</div>
-                    </div>
-                </div>
-                """)
+                gr.HTML('<div class="hdivider"></div>')
+                gr.HTML('<div class="section-tag">[ 02 ] &nbsp; mode</div>')
 
                 method_choice = gr.Radio(
-                    choices=["Super Strict", "Human Speech Only (AI)"],
-                    value="Super Strict",
-                    label="Mode",
-                    show_label=False
+                    choices=["⚡ Super Strict", "🧠 Human Speech Only (AI)"],
+                    value="⚡ Super Strict",
+                    label="",
+                    show_label=False,
+                    elem_classes=["gr-radio-group"]
                 )
 
-                silence_threshold = gr.Slider(
-                    minimum=0.0,
-                    maximum=0.5,
-                    step=0.01,
-                    value=0.05,
-                    label="Keep Silence (seconds)",
-                    info="Lower = more trimmed. For Shorts/TikTok try 0.03-0.05"
-                )
+                gr.HTML('<div class="hdivider"></div>')
+                silence_threshold = gr.Number(
+                                    label="Keep Silence (seconds)",
+                                    value=0.05,
+                                    info="lower = tighter cut · for shorts / TikTok try 0.03–0.05"
+                                )
+  
+                gr.HTML('<div style="height:12px;"></div>')
 
-                submit_btn = gr.Button(
-                    "Remove Silence",
-                    variant="primary",
-                    size="lg"
-                )
+                with gr.Row(elem_classes=["submit-row"]):
+                    submit_btn = gr.Button(
+                        "▶  REMOVE SILENCE",
+                        variant="primary",
+                        size="lg"
+                    )
 
             with gr.Column(scale=1):
-                gr.HTML('<div style="color:#e2e8f0; font-weight:600; font-size:1em; margin-bottom:8px;">Result</div>')
-                result_stats = gr.HTML(
-                    value='<div style="text-align:center; padding:40px 20px; color:#64748b; font-size:0.9em;">Upload audio and click Remove Silence to see results here.</div>'
-                )
-                audio_output = gr.Audio(label="Play Processed Audio", show_label=True)
-                file_output = gr.File(label="Download", show_label=True)
+                gr.HTML('<div class="section-tag">[ 03 ] &nbsp; result</div>')
 
-        # ─── Footer ──────────────────────────────────────────────────────
+                audio_output = gr.Audio(
+                    label="Processed Audio",
+                    show_label=True,
+                )
+
+                file_output = gr.File(
+                    label="Download",
+                    show_label=True,
+                )
+
+                result_stats = gr.HTML(
+                    value=EMPTY_RESULT,
+                    elem_id="result-html"
+                )
+
         gr.HTML("""
-        <div class="footer-text">
-            <p>Works with MP3, WAV, OGG, FLAC, M4A and more</p>
-            <p style="margin-top:8px;">
-                <a href="https://github.com/NeuralFalconYT/Remove-Silence-From-Audio" target="_blank">
-                    Install locally for unlimited use
-                </a>
-                &nbsp;&bull;&nbsp; No copyrighted content please
-            </p>
+        <div class="site-footer">
+            <span class="footer-l">mp3 &bull; wav &bull; ogg &bull; flac &bull; m4a &bull; and more</span>
+            <span class="footer-r">
+                <a href="https://github.com/NeuralFalconYT/Remove-Silence-From-Audio" target="_blank">install locally &rarr;</a>
+                &nbsp;&nbsp;
+                <a href="#">no copyrighted content</a>
+            </span>
         </div>
         """)
 
+        def process_wrapper(audio_file, seconds, method):
+            clean_method = method.replace("⚡ ", "").replace("🧠 ", "")
+            return process_audio(audio_file, seconds, clean_method)
+
         submit_btn.click(
-            fn=process_audio,
+            fn=process_wrapper,
             inputs=[audio_input, silence_threshold, method_choice],
             outputs=[audio_output, file_output, result_stats]
         )

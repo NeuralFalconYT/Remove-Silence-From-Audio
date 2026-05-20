@@ -242,31 +242,31 @@ def process_audio(audio_file, seconds, method):
         mode_label = "SUPER STRICT" if method == "Super Strict" else "HUMAN SPEECH (AI)"
 
         result_html = f"""
-<div style="margin-top:14px; border:1px solid #e8eaed; border-radius:12px; overflow:hidden; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.08);">
+<div style="margin-top:14px; border:1px solid #3a3c42; border-radius:10px; overflow:hidden; background:#2b2d31; box-shadow:0 2px 6px rgba(0,0,0,0.3);">
     <div style="display:grid; grid-template-columns:1fr 1fr 1fr;">
-        <div style="padding:22px 16px; text-align:center; border-right:1px solid #f1f3f4;">
-            <div style="font-size:11px; letter-spacing:0.05em; color:#5f6368; text-transform:uppercase; margin-bottom:10px; font-family:'Inter',sans-serif; font-weight:500;">Original</div>
-            <div style="font-size:22px; font-weight:600; color:#202124; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(before)}</div>
+        <div style="padding:18px 14px; text-align:center; border-right:1px solid #3a3c42;">
+            <div style="font-size:11px; letter-spacing:0.05em; color:#b5bac1; text-transform:uppercase; margin-bottom:8px; font-family:'Inter',sans-serif; font-weight:500;">Original</div>
+            <div style="font-size:20px; font-weight:600; color:#f2f3f5; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(before)}</div>
         </div>
-        <div style="padding:22px 16px; text-align:center; border-right:1px solid #f1f3f4; background:#f8f9fe;">
-            <div style="font-size:11px; letter-spacing:0.05em; color:#5f6368; text-transform:uppercase; margin-bottom:10px; font-family:'Inter',sans-serif; font-weight:500;">New</div>
-            <div style="font-size:22px; font-weight:600; color:#1a73e8; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(after)}</div>
+        <div style="padding:18px 14px; text-align:center; border-right:1px solid #3a3c42; background:#313338;">
+            <div style="font-size:11px; letter-spacing:0.05em; color:#b5bac1; text-transform:uppercase; margin-bottom:8px; font-family:'Inter',sans-serif; font-weight:500;">New</div>
+            <div style="font-size:20px; font-weight:600; color:#5865f2; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(after)}</div>
         </div>
-        <div style="padding:22px 16px; text-align:center;">
-            <div style="font-size:11px; letter-spacing:0.05em; color:#5f6368; text-transform:uppercase; margin-bottom:10px; font-family:'Inter',sans-serif; font-weight:500;">Removed</div>
-            <div style="font-size:22px; font-weight:600; color:#ea4335; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{percent:.1f}%</div>
-            <div style="font-size:12px; color:#80868b; margin-top:4px; font-family:'Inter',sans-serif;">{fmt(removed)}</div>
+        <div style="padding:18px 14px; text-align:center;">
+            <div style="font-size:11px; letter-spacing:0.05em; color:#b5bac1; text-transform:uppercase; margin-bottom:8px; font-family:'Inter',sans-serif; font-weight:500;">Removed</div>
+            <div style="font-size:20px; font-weight:600; color:#ed4245; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{percent:.1f}%</div>
+            <div style="font-size:12px; color:#6d7076; margin-top:4px; font-family:'Inter',sans-serif;">{fmt(removed)}</div>
         </div>
     </div>
-    <div style="padding:10px 16px; background:#f8f9fa; border-top:1px solid #f1f3f4; text-align:right;">
-        <span style="font-family:'Inter',sans-serif; font-size:11px; color:#80868b; letter-spacing:0.02em;">Mode: {mode_label}</span>
+    <div style="padding:8px 14px; background:#313338; border-top:1px solid #3a3c42; text-align:right;">
+        <span style="font-family:'Inter',sans-serif; font-size:11px; color:#6d7076; letter-spacing:0.02em;">Mode: {mode_label}</span>
     </div>
 </div>
 """
         return output_audio_file, output_audio_file, result_html
 
     except Exception as e:
-        return None, None, f"<p style='color:#ea4335; font-family:Inter,sans-serif; font-size:13px; margin-top:12px; padding:12px 16px; background:#fce8e6; border-radius:8px; border:1px solid #f5c6cb;'>Error: {str(e)}</p>"
+        return None, None, f"<p style='color:#ed4245; font-family:Inter,sans-serif; font-size:13px; margin-top:12px; padding:12px 16px; background:#2d1214; border-radius:8px; border:1px solid #5c2b2e;'>Error: {str(e)}</p>"
 
 
 # ─── UI ───────────────────────────────────────────────────────────────────────
@@ -279,84 +279,84 @@ def ui():
         font=[gr.themes.GoogleFont("Inter"), "sans-serif"],
         font_mono=[gr.themes.GoogleFont("Inter"), "monospace"],
     ).set(
-        body_background_fill="#ffffff",
-        body_background_fill_dark="#ffffff",
-        block_background_fill="#ffffff",
-        block_background_fill_dark="#ffffff",
+        body_background_fill="#1e1f22",
+        body_background_fill_dark="#1e1f22",
+        block_background_fill="#2b2d31",
+        block_background_fill_dark="#2b2d31",
         block_border_width="1px",
-        block_border_color="#e8eaed",
-        block_border_color_dark="#e8eaed",
-        block_radius="12px",
-        block_shadow="0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
-        block_shadow_dark="0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
-        block_label_background_fill="#ffffff",
-        block_label_background_fill_dark="#ffffff",
+        block_border_color="#3a3c42",
+        block_border_color_dark="#3a3c42",
+        block_radius="10px",
+        block_shadow="0 2px 6px rgba(0,0,0,0.3)",
+        block_shadow_dark="0 2px 6px rgba(0,0,0,0.3)",
+        block_label_background_fill="#2b2d31",
+        block_label_background_fill_dark="#2b2d31",
         block_label_border_width="0px",
-        block_label_text_color="#5f6368",
-        block_label_text_color_dark="#5f6368",
+        block_label_text_color="#b5bac1",
+        block_label_text_color_dark="#b5bac1",
         block_label_text_size="13px",
-        block_title_text_color="#202124",
-        block_title_text_color_dark="#202124",
+        block_title_text_color="#f2f3f5",
+        block_title_text_color_dark="#f2f3f5",
         block_title_text_size="14px",
-        body_text_color="#202124",
-        body_text_color_dark="#202124",
-        body_text_color_subdued="#5f6368",
-        body_text_color_subdued_dark="#5f6368",
+        body_text_color="#e0e1e5",
+        body_text_color_dark="#e0e1e5",
+        body_text_color_subdued="#b5bac1",
+        body_text_color_subdued_dark="#b5bac1",
         body_text_size="14px",
-        input_background_fill="#f8f9fa",
-        input_background_fill_dark="#f8f9fa",
-        input_background_fill_focus="#ffffff",
-        input_background_fill_focus_dark="#ffffff",
-        input_border_color="#e8eaed",
-        input_border_color_dark="#e8eaed",
-        input_border_color_focus="#1a73e8",
-        input_border_color_focus_dark="#1a73e8",
+        input_background_fill="#383a40",
+        input_background_fill_dark="#383a40",
+        input_background_fill_focus="#404249",
+        input_background_fill_focus_dark="#404249",
+        input_border_color="#4a4c52",
+        input_border_color_dark="#4a4c52",
+        input_border_color_focus="#5865f2",
+        input_border_color_focus_dark="#5865f2",
         input_border_width="1px",
         input_radius="8px",
         input_shadow="none",
         input_shadow_dark="none",
         input_text_size="14px",
-        input_placeholder_color="#9aa0a6",
-        input_placeholder_color_dark="#9aa0a6",
-        button_primary_background_fill="linear-gradient(135deg, #1a73e8 0%, #6c63ff 100%)",
-        button_primary_background_fill_dark="linear-gradient(135deg, #1a73e8 0%, #6c63ff 100%)",
-        button_primary_background_fill_hover="linear-gradient(135deg, #1557b0 0%, #5a52d5 100%)",
-        button_primary_background_fill_hover_dark="linear-gradient(135deg, #1557b0 0%, #5a52d5 100%)",
+        input_placeholder_color="#6d7076",
+        input_placeholder_color_dark="#6d7076",
+        button_primary_background_fill="#5865f2",
+        button_primary_background_fill_dark="#5865f2",
+        button_primary_background_fill_hover="#4752c4",
+        button_primary_background_fill_hover_dark="#4752c4",
         button_primary_text_color="#ffffff",
         button_primary_text_color_dark="#ffffff",
         button_primary_border_color="transparent",
         button_primary_border_color_dark="transparent",
-        button_secondary_background_fill="#f8f9fa",
-        button_secondary_background_fill_dark="#f8f9fa",
-        button_secondary_background_fill_hover="#f1f3f4",
-        button_secondary_background_fill_hover_dark="#f1f3f4",
-        button_secondary_text_color="#1a73e8",
-        button_secondary_text_color_dark="#1a73e8",
-        button_secondary_border_color="#e8eaed",
-        button_secondary_border_color_dark="#e8eaed",
-        button_large_radius="24px",
+        button_secondary_background_fill="#383a40",
+        button_secondary_background_fill_dark="#383a40",
+        button_secondary_background_fill_hover="#404249",
+        button_secondary_background_fill_hover_dark="#404249",
+        button_secondary_text_color="#e0e1e5",
+        button_secondary_text_color_dark="#e0e1e5",
+        button_secondary_border_color="#4a4c52",
+        button_secondary_border_color_dark="#4a4c52",
+        button_large_radius="8px",
         button_large_text_size="14px",
         button_large_padding="12px 32px",
-        slider_color="#1a73e8",
-        slider_color_dark="#1a73e8",
-        checkbox_background_color="#ffffff",
-        checkbox_background_color_dark="#ffffff",
-        checkbox_border_color="#dadce0",
-        checkbox_border_color_dark="#dadce0",
-        checkbox_border_color_selected="#1a73e8",
-        checkbox_border_color_selected_dark="#1a73e8",
-        checkbox_label_background_fill="#ffffff",
-        checkbox_label_background_fill_dark="#ffffff",
-        checkbox_label_background_fill_selected="#e8f0fe",
-        checkbox_label_background_fill_selected_dark="#e8f0fe",
-        checkbox_label_border_color="#e8eaed",
-        checkbox_label_border_color_dark="#e8eaed",
-        checkbox_label_border_color_hover="#1a73e8",
-        checkbox_label_border_color_hover_dark="#1a73e8",
-        checkbox_label_text_color="#3c4043",
-        checkbox_label_text_color_dark="#3c4043",
-        checkbox_label_text_color_selected="#1a73e8",
-        checkbox_label_text_color_selected_dark="#1a73e8",
+        slider_color="#5865f2",
+        slider_color_dark="#5865f2",
+        checkbox_background_color="#383a40",
+        checkbox_background_color_dark="#383a40",
+        checkbox_border_color="#4a4c52",
+        checkbox_border_color_dark="#4a4c52",
+        checkbox_border_color_selected="#5865f2",
+        checkbox_border_color_selected_dark="#5865f2",
+        checkbox_label_background_fill="#2b2d31",
+        checkbox_label_background_fill_dark="#2b2d31",
+        checkbox_label_background_fill_selected="#3c4270",
+        checkbox_label_background_fill_selected_dark="#3c4270",
+        checkbox_label_border_color="#4a4c52",
+        checkbox_label_border_color_dark="#4a4c52",
+        checkbox_label_border_color_hover="#5865f2",
+        checkbox_label_border_color_hover_dark="#5865f2",
+        checkbox_label_text_color="#e0e1e5",
+        checkbox_label_text_color_dark="#e0e1e5",
+        checkbox_label_text_color_selected="#ffffff",
+        checkbox_label_text_color_selected_dark="#ffffff",
     )
 
     css = """
@@ -367,116 +367,114 @@ def ui():
         margin: 0 auto !important;
         padding: 0 24px !important;
         box-sizing: border-box !important;
-        background: #ffffff !important;
+        background: #1e1f22 !important;
     }
 
     body {
-        background: #f8f9fa !important;
+        background: #1e1f22 !important;
     }
 
-    /* ── YouTube Banner ── */
-    .yt-banner {
+    /* ── Top Banner (YouTube + Ko-fi) ── */
+    .top-banner {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        padding: 10px 20px;
-        background: #f0f4ff;
-        border: 1px solid #d2e3fc;
-        border-radius: 10px;
-        margin-bottom: 32px;
-        margin-top: 16px;
+        gap: 16px;
+        flex-wrap: wrap;
+        padding: 8px 16px;
+        background: #2b2d31;
+        border: 1px solid #3a3c42;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        margin-top: 8px;
     }
 
-    .yt-banner svg {
-        flex-shrink: 0;
-    }
-
-    .yt-banner p {
-        margin: 0;
+    .top-banner a {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        color: #3c4043;
-        font-weight: 400;
-    }
-
-    .yt-banner a {
-        color: #1a73e8;
-        font-weight: 600;
+        font-size: 12px;
+        font-weight: 500;
         text-decoration: none;
+        color: #b5bac1;
+        transition: color 0.15s;
     }
 
-    .yt-banner a:hover {
-        text-decoration: underline;
+    .top-banner a:hover {
+        color: #ffffff;
+    }
+
+    .top-banner .divider {
+        width: 1px;
+        height: 14px;
+        background: #4a4c52;
     }
 
     /* ── Header ── */
     .site-header {
-        padding: 40px 0 32px;
+        padding: 12px 0 10px;
         text-align: center;
     }
 
     .header-title {
         font-family: 'Inter', sans-serif;
-        font-size: clamp(28px, 5vw, 42px);
+        font-size: clamp(22px, 4vw, 30px);
         font-weight: 700;
-        color: #202124;
+        color: #f2f3f5;
         letter-spacing: -0.02em;
-        line-height: 1.1;
-        margin-bottom: 12px;
+        line-height: 1.2;
+        margin-bottom: 4px;
     }
 
     .header-title span {
-        background: linear-gradient(135deg, #1a73e8, #6c63ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+        color: #5865f2;
     }
 
     .header-sub {
         font-family: 'Inter', sans-serif;
-        font-size: 15px;
-        color: #5f6368;
-        margin-bottom: 20px;
+        font-size: 13px;
+        color: #b5bac1;
+        margin-bottom: 8px;
         font-weight: 400;
     }
 
     .header-badges {
         display: flex;
-        gap: 8px;
+        gap: 6px;
         flex-wrap: wrap;
         justify-content: center;
     }
 
     .hbadge {
         font-family: 'Inter', sans-serif;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 500;
-        padding: 4px 14px;
-        border: 1px solid #e8eaed;
-        color: #5f6368;
-        border-radius: 20px;
-        background: #f8f9fa;
+        padding: 3px 10px;
+        border: 1px solid #4a4c52;
+        color: #b5bac1;
+        border-radius: 14px;
+        background: #383a40;
     }
 
     /* ── Section labels ── */
     .section-tag {
         font-family: 'Inter', sans-serif;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 600;
-        letter-spacing: 0.02em;
-        color: #5f6368;
+        letter-spacing: 0.04em;
+        color: #b5bac1;
         text-transform: uppercase;
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #f1f3f4;
+        margin-bottom: 8px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #3a3c42;
     }
 
     /* ── Radio ── */
     .gr-radio-group .wrap { gap: 8px !important; }
     .gr-radio-group label {
-        border-radius: 20px !important;
-        padding: 8px 18px !important;
+        border-radius: 6px !important;
+        padding: 8px 14px !important;
         font-size: 13px !important;
         font-family: 'Inter', sans-serif !important;
         font-weight: 500 !important;
@@ -486,26 +484,25 @@ def ui():
     /* ── Submit button ── */
     .submit-row button {
         width: 100% !important;
-        height: 48px !important;
+        height: 44px !important;
         font-size: 14px !important;
         font-weight: 600 !important;
         letter-spacing: 0.02em !important;
-        border-radius: 24px !important;
+        border-radius: 8px !important;
         font-family: 'Inter', sans-serif !important;
-        box-shadow: 0 2px 8px rgba(26, 115, 232, 0.2) !important;
         transition: all 0.2s ease !important;
     }
 
     .submit-row button:hover {
-        box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3) !important;
         transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3) !important;
     }
 
     /* ── Divider ── */
     .hdivider {
         height: 1px;
-        background: #f1f3f4;
-        margin: 20px 0;
+        background: #3a3c42;
+        margin: 14px 0;
     }
 
     /* ── Result placeholder ── */
@@ -513,26 +510,26 @@ def ui():
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 80px;
-        border: 1px dashed #dadce0;
-        border-radius: 12px;
-        margin-top: 14px;
-        background: #f8f9fa;
+        min-height: 60px;
+        border: 1px dashed #4a4c52;
+        border-radius: 8px;
+        margin-top: 10px;
+        background: #2b2d31;
     }
 
     .result-empty p {
         font-family: 'Inter', sans-serif;
         font-size: 13px;
-        color: #9aa0a6;
+        color: #6d7076;
         text-align: center;
         font-weight: 400;
     }
 
     /* ── Footer / Contact Section ── */
     .site-footer {
-        border-top: 1px solid #f1f3f4;
-        padding: 28px 0 40px;
-        margin-top: 40px;
+        border-top: 1px solid #3a3c42;
+        padding: 20px 0 28px;
+        margin-top: 28px;
     }
 
     .footer-content {
@@ -540,19 +537,19 @@ def ui():
         justify-content: space-between;
         align-items: flex-start;
         flex-wrap: wrap;
-        gap: 20px;
+        gap: 16px;
     }
 
     .footer-formats {
         font-family: 'Inter', sans-serif;
         font-size: 12px;
-        color: #9aa0a6;
+        color: #6d7076;
         font-weight: 400;
     }
 
     .footer-contact {
         display: flex;
-        gap: 16px;
+        gap: 14px;
         flex-wrap: wrap;
         align-items: center;
     }
@@ -560,7 +557,7 @@ def ui():
     .footer-contact a {
         font-family: 'Inter', sans-serif;
         font-size: 12px;
-        color: #5f6368;
+        color: #b5bac1;
         text-decoration: none;
         display: flex;
         align-items: center;
@@ -570,16 +567,16 @@ def ui():
     }
 
     .footer-contact a:hover {
-        color: #1a73e8;
+        color: #5865f2;
     }
 
     .footer-divider {
         width: 1px;
         height: 14px;
-        background: #e8eaed;
+        background: #4a4c52;
     }
 
-    .gr-row { gap: 24px !important; }
+    .gr-row { gap: 20px !important; }
     #result-html > div { margin: 0 !important; }
     """
 
@@ -592,11 +589,20 @@ def ui():
     with gr.Blocks(theme=theme, css=css, title="Remove Silence") as demo:
 
         gr.HTML("""
-        <div class="yt-banner">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#ea4335">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-            </svg>
-            <p>Subscribe to <a href="https://www.youtube.com/@neuralfalcon/" target="_blank">Neural Falcon on YouTube</a> for more AI tools and tutorials</p>
+        <div class="top-banner">
+            <a href="https://www.youtube.com/@neuralfalcon/" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff0000">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                Subscribe on YouTube
+            </a>
+            <span class="divider"></span>
+            <a href="https://ko-fi.com/neuralfalcon" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5e5b">
+                    <path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/>
+                </svg>
+                Buy me a coffee
+            </a>
         </div>
         """)
 

@@ -48,7 +48,6 @@ def clean_file_name(file_path):
     )
     return clean_file_path
 
-
 def calculate_duration(file_path):
     audio = AudioSegment.from_file(file_path)
     return len(audio) / 1000.0
@@ -194,11 +193,16 @@ def remove_silence_silero(file_path, min_silence_duration_ms=100, padding_ms=30)
 
 # ─── Main Processing ──────────────────────────────────────────────────────────
 
-def process_audio(audio_file, seconds, method):
+def process_audio(audio_file, seconds_str, method):
     if audio_file is None:
         return None, None, ""
     if not os.path.exists(audio_file):
         return None, None, ""
+
+    try:
+        seconds = float(seconds_str)
+    except ValueError:
+        seconds = 0.05
 
     track_file(audio_file)
     converted_audio = convert_to_wav(audio_file)
@@ -241,471 +245,321 @@ def process_audio(audio_file, seconds, method):
 
         mode_label = "SUPER STRICT" if method == "Super Strict" else "HUMAN SPEECH (AI)"
 
+        # Sleek, Dark-Themed Result Card
         result_html = f"""
-<div style="margin-top:14px; border:1px solid #e8eaed; border-radius:12px; overflow:hidden; background:#ffffff; box-shadow:0 1px 3px rgba(0,0,0,0.08);">
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr;">
-        <div style="padding:22px 16px; text-align:center; border-right:1px solid #f1f3f4;">
-            <div style="font-size:11px; letter-spacing:0.05em; color:#5f6368; text-transform:uppercase; margin-bottom:10px; font-family:'Inter',sans-serif; font-weight:500;">Original</div>
-            <div style="font-size:22px; font-weight:600; color:#202124; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(before)}</div>
+        <div style="margin-top: 15px; background: #1c1c1c; border: 1px solid #333; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333;">
+                
+                <div style="flex: 1; padding: 18px 10px; text-align: center; border-right: 1px solid #333;">
+                    <div style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Original</div>
+                    <div style="font-size: 22px; font-weight: 700; color: #f4f4f5; font-family: 'Inter', sans-serif;">{fmt(before)}</div>
+                </div>
+                
+                <div style="flex: 1; padding: 18px 10px; text-align: center; border-right: 1px solid #333; background: #222;">
+                    <div style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">New</div>
+                    <div style="font-size: 22px; font-weight: 700; color: #3b82f6; font-family: 'Inter', sans-serif;">{fmt(after)}</div>
+                </div>
+                
+                <div style="flex: 1; padding: 18px 10px; text-align: center; background: #1c1c1c;">
+                    <div style="font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;">Removed</div>
+                    <div style="font-size: 22px; font-weight: 700; color: #ef4444; font-family: 'Inter', sans-serif;">{percent:.1f}%</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 4px; font-weight: 500;">{fmt(removed)}</div>
+                </div>
+
+            </div>
+            <div style="background: #141414; padding: 10px 16px; text-align: right; font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;">
+                Mode: {mode_label}
+            </div>
         </div>
-        <div style="padding:22px 16px; text-align:center; border-right:1px solid #f1f3f4; background:#f8f9fe;">
-            <div style="font-size:11px; letter-spacing:0.05em; color:#5f6368; text-transform:uppercase; margin-bottom:10px; font-family:'Inter',sans-serif; font-weight:500;">New</div>
-            <div style="font-size:22px; font-weight:600; color:#1a73e8; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(after)}</div>
-        </div>
-        <div style="padding:22px 16px; text-align:center;">
-            <div style="font-size:11px; letter-spacing:0.05em; color:#5f6368; text-transform:uppercase; margin-bottom:10px; font-family:'Inter',sans-serif; font-weight:500;">Removed</div>
-            <div style="font-size:22px; font-weight:600; color:#ea4335; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{percent:.1f}%</div>
-            <div style="font-size:12px; color:#80868b; margin-top:4px; font-family:'Inter',sans-serif;">{fmt(removed)}</div>
-        </div>
-    </div>
-    <div style="padding:10px 16px; background:#f8f9fa; border-top:1px solid #f1f3f4; text-align:right;">
-        <span style="font-family:'Inter',sans-serif; font-size:11px; color:#80868b; letter-spacing:0.02em;">Mode: {mode_label}</span>
-    </div>
-</div>
-"""
+        """
         return output_audio_file, output_audio_file, result_html
 
     except Exception as e:
-        return None, None, f"<p style='color:#ea4335; font-family:Inter,sans-serif; font-size:13px; margin-top:12px; padding:12px 16px; background:#fce8e6; border-radius:8px; border:1px solid #f5c6cb;'>Error: {str(e)}</p>"
+        return None, None, f"<p style='color:#ef4444; font-family:Inter,sans-serif; font-size:13px; margin-top:10px; padding:12px; background:#2a1111; border-radius:8px; border:1px solid #5a1a1a;'>Error: {str(e)}</p>"
 
 
-# ─── UI ───────────────────────────────────────────────────────────────────────
+# -----------------------------
+# CSS FOR LAYOUT & THEMING
+# -----------------------------
 
-def ui():
-    theme = gr.themes.Base(
-        primary_hue=gr.themes.colors.blue,
-        secondary_hue=gr.themes.colors.blue,
-        neutral_hue=gr.themes.colors.gray,
-        font=[gr.themes.GoogleFont("Inter"), "sans-serif"],
-        font_mono=[gr.themes.GoogleFont("Inter"), "monospace"],
-    ).set(
-        body_background_fill="#ffffff",
-        body_background_fill_dark="#ffffff",
-        block_background_fill="#ffffff",
-        block_background_fill_dark="#ffffff",
-        block_border_width="1px",
-        block_border_color="#e8eaed",
-        block_border_color_dark="#e8eaed",
-        block_radius="12px",
-        block_shadow="0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
-        block_shadow_dark="0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
-        block_label_background_fill="#ffffff",
-        block_label_background_fill_dark="#ffffff",
-        block_label_border_width="0px",
-        block_label_text_color="#5f6368",
-        block_label_text_color_dark="#5f6368",
-        block_label_text_size="13px",
-        block_title_text_color="#202124",
-        block_title_text_color_dark="#202124",
-        block_title_text_size="14px",
-        body_text_color="#202124",
-        body_text_color_dark="#202124",
-        body_text_color_subdued="#5f6368",
-        body_text_color_subdued_dark="#5f6368",
-        body_text_size="14px",
-        input_background_fill="#f8f9fa",
-        input_background_fill_dark="#f8f9fa",
-        input_background_fill_focus="#ffffff",
-        input_background_fill_focus_dark="#ffffff",
-        input_border_color="#e8eaed",
-        input_border_color_dark="#e8eaed",
-        input_border_color_focus="#1a73e8",
-        input_border_color_focus_dark="#1a73e8",
-        input_border_width="1px",
-        input_radius="8px",
-        input_shadow="none",
-        input_shadow_dark="none",
-        input_text_size="14px",
-        input_placeholder_color="#9aa0a6",
-        input_placeholder_color_dark="#9aa0a6",
-        button_primary_background_fill="linear-gradient(135deg, #1a73e8 0%, #6c63ff 100%)",
-        button_primary_background_fill_dark="linear-gradient(135deg, #1a73e8 0%, #6c63ff 100%)",
-        button_primary_background_fill_hover="linear-gradient(135deg, #1557b0 0%, #5a52d5 100%)",
-        button_primary_background_fill_hover_dark="linear-gradient(135deg, #1557b0 0%, #5a52d5 100%)",
-        button_primary_text_color="#ffffff",
-        button_primary_text_color_dark="#ffffff",
-        button_primary_border_color="transparent",
-        button_primary_border_color_dark="transparent",
-        button_secondary_background_fill="#f8f9fa",
-        button_secondary_background_fill_dark="#f8f9fa",
-        button_secondary_background_fill_hover="#f1f3f4",
-        button_secondary_background_fill_hover_dark="#f1f3f4",
-        button_secondary_text_color="#1a73e8",
-        button_secondary_text_color_dark="#1a73e8",
-        button_secondary_border_color="#e8eaed",
-        button_secondary_border_color_dark="#e8eaed",
-        button_large_radius="24px",
-        button_large_text_size="14px",
-        button_large_padding="12px 32px",
-        slider_color="#1a73e8",
-        slider_color_dark="#1a73e8",
-        checkbox_background_color="#ffffff",
-        checkbox_background_color_dark="#ffffff",
-        checkbox_border_color="#dadce0",
-        checkbox_border_color_dark="#dadce0",
-        checkbox_border_color_selected="#1a73e8",
-        checkbox_border_color_selected_dark="#1a73e8",
-        checkbox_label_background_fill="#ffffff",
-        checkbox_label_background_fill_dark="#ffffff",
-        checkbox_label_background_fill_selected="#e8f0fe",
-        checkbox_label_background_fill_selected_dark="#e8f0fe",
-        checkbox_label_border_color="#e8eaed",
-        checkbox_label_border_color_dark="#e8eaed",
-        checkbox_label_border_color_hover="#1a73e8",
-        checkbox_label_border_color_hover_dark="#1a73e8",
-        checkbox_label_text_color="#3c4043",
-        checkbox_label_text_color_dark="#3c4043",
-        checkbox_label_text_color_selected="#1a73e8",
-        checkbox_label_text_color_selected_dark="#1a73e8",
-    )
+css = """
+/* APP & MAIN */
+body, html {
+    background: #171717 !important;
+    font-family: 'Inter', sans-serif !important;
+    color: white !important;
+    margin: 0;
+    padding: 0;
+}
 
-    css = """
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* 🟢 FORCING THE WIDE LAYOUT 🟢 */
+.gradio-container {
+    max-width: 1500px !important; /* Forces container to stretch out */
+    width: 95% !important;        /* Uses 95% of the screen width */
+    margin: auto !important;
+    background: #171717 !important;
+    padding: 20px 24px !important;
+}
 
-    .gradio-container {
-        max-width: 900px !important;
-        margin: 0 auto !important;
-        padding: 0 24px !important;
-        box-sizing: border-box !important;
-        background: #ffffff !important;
+/* REMOVE DEFAULT FOOTER */
+footer { display: none !important; }
+
+.dark {
+    --body-background-fill: #171717 !important;
+    --block-background-fill: #262626 !important;
+    --block-border-color: #333 !important;
+}
+
+/* TOPBAR */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px; 
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: white;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.logo-text {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.nav {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+}
+
+.nav a {
+    color: #a1a1aa;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.nav a:hover {
+    color: white;
+}
+
+.nav-yt { color: #ff4e4e !important; }
+.nav-kofi { color: #29abe0 !important; }
+
+/* HERO */
+.hero {
+    text-align: center;
+    margin-bottom: 35px; 
+}
+
+.hero h1 {
+    font-size: 42px; 
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    margin-bottom: 6px;
+}
+
+/* BLUE HERO TEXT */
+.hero span {
+    color: #3b82f6; 
+}
+
+.hero p {
+    color: #a1a1aa;
+    font-size: 15px; 
+    margin: 4px 0 16px 0;
+}
+
+.badges {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.badge {
+    background: #262626;
+    border: 1px solid #333;
+    padding: 6px 14px;
+    border-radius: 999px;
+    color: #d4d4d8;
+    font-size: 11px; 
+    font-weight: 500;
+}
+
+/* CARDS / PANELS */
+.panel {
+    background: #262626 !important;
+    border: 1px solid #333 !important;
+    border-radius: 14px !important;
+    padding: 24px !important; 
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+/* FORCE SIDE BY SIDE ON DESKTOP */
+@media (min-width: 768px) {
+    .side-by-side {
+        flex-wrap: nowrap !important;
     }
+}
 
-    body {
-        background: #f8f9fa !important;
-    }
+/* TITLES */
+.section-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #888;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    font-weight: 600;
+}
 
-    /* ── YouTube Banner ── */
-    .yt-banner {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 10px 20px;
-        background: #f0f4ff;
-        border: 1px solid #d2e3fc;
-        border-radius: 10px;
-        margin-bottom: 32px;
-        margin-top: 16px;
-    }
+/* AUDIO COMPONENT */
+audio {
+    border-radius: 8px !important;
+    background: #1f1f1f !important;
+}
 
-    .yt-banner svg {
-        flex-shrink: 0;
-    }
+/* CUSTOM BLUE BUTTON */
+#process-btn {
+    background: #3b82f6 !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    height: 48px !important; 
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    margin-top: 14px !important;
+    transition: all 0.2s ease-in-out !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+}
 
-    .yt-banner p {
-        margin: 0;
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        color: #3c4043;
-        font-weight: 400;
-    }
+#process-btn:hover {
+    background: #2563eb !important;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.4) !important;
+    transform: translateY(-1px);
+}
 
-    .yt-banner a {
-        color: #1a73e8;
-        font-weight: 600;
-        text-decoration: none;
-    }
+/* INPUTS */
+.gr-textbox, .gr-dropdown {
+    background: #1f1f1f !important;
+    border: 1px solid #3a3a3a !important;
+    border-radius: 8px !important;
+}
 
-    .yt-banner a:hover {
-        text-decoration: underline;
-    }
-
-    /* ── Header ── */
-    .site-header {
-        padding: 40px 0 32px;
-        text-align: center;
-    }
-
-    .header-title {
-        font-family: 'Inter', sans-serif;
-        font-size: clamp(28px, 5vw, 42px);
-        font-weight: 700;
-        color: #202124;
-        letter-spacing: -0.02em;
-        line-height: 1.1;
-        margin-bottom: 12px;
-    }
-
-    .header-title span {
-        background: linear-gradient(135deg, #1a73e8, #6c63ff);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .header-sub {
-        font-family: 'Inter', sans-serif;
-        font-size: 15px;
-        color: #5f6368;
-        margin-bottom: 20px;
-        font-weight: 400;
-    }
-
-    .header-badges {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .hbadge {
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        font-weight: 500;
-        padding: 4px 14px;
-        border: 1px solid #e8eaed;
-        color: #5f6368;
-        border-radius: 20px;
-        background: #f8f9fa;
-    }
-
-    /* ── Section labels ── */
-    .section-tag {
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.02em;
-        color: #5f6368;
-        text-transform: uppercase;
-        margin-bottom: 12px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #f1f3f4;
-    }
-
-    /* ── Radio ── */
-    .gr-radio-group .wrap { gap: 8px !important; }
-    .gr-radio-group label {
-        border-radius: 20px !important;
-        padding: 8px 18px !important;
-        font-size: 13px !important;
-        font-family: 'Inter', sans-serif !important;
-        font-weight: 500 !important;
-        transition: all 0.15s !important;
-    }
-
-    /* ── Submit button ── */
-    .submit-row button {
-        width: 100% !important;
-        height: 48px !important;
-        font-size: 14px !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.02em !important;
-        border-radius: 24px !important;
-        font-family: 'Inter', sans-serif !important;
-        box-shadow: 0 2px 8px rgba(26, 115, 232, 0.2) !important;
-        transition: all 0.2s ease !important;
-    }
-
-    .submit-row button:hover {
-        box-shadow: 0 4px 16px rgba(26, 115, 232, 0.3) !important;
-        transform: translateY(-1px) !important;
-    }
-
-    /* ── Divider ── */
-    .hdivider {
-        height: 1px;
-        background: #f1f3f4;
-        margin: 20px 0;
-    }
-
-    /* ── Result placeholder ── */
-    .result-empty {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 80px;
-        border: 1px dashed #dadce0;
-        border-radius: 12px;
-        margin-top: 14px;
-        background: #f8f9fa;
-    }
-
-    .result-empty p {
-        font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        color: #9aa0a6;
-        text-align: center;
-        font-weight: 400;
-    }
-
-    /* ── Footer / Contact Section ── */
-    .site-footer {
-        border-top: 1px solid #f1f3f4;
-        padding: 28px 0 40px;
-        margin-top: 40px;
-    }
-
-    .footer-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        flex-wrap: wrap;
-        gap: 20px;
-    }
-
-    .footer-formats {
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        color: #9aa0a6;
-        font-weight: 400;
-    }
-
-    .footer-contact {
-        display: flex;
-        gap: 16px;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .footer-contact a {
-        font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        color: #5f6368;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        transition: color 0.15s;
-        font-weight: 500;
-    }
-
-    .footer-contact a:hover {
-        color: #1a73e8;
-    }
-
-    .footer-divider {
-        width: 1px;
-        height: 14px;
-        background: #e8eaed;
-    }
-
-    .gr-row { gap: 24px !important; }
-    #result-html > div { margin: 0 !important; }
-    """
-
-    EMPTY_RESULT = """
-<div class="result-empty">
-    <p>Upload audio and click process to see results</p>
-</div>
+/* MOBILE RESPONSIVENESS */
+@media(max-width: 900px) {
+    .topbar { flex-direction: column; gap: 16px; }
+    .nav { flex-wrap: wrap; justify-content: center; }
+}
 """
 
-    with gr.Blocks(theme=theme, css=css, title="Remove Silence") as demo:
+# -----------------------------
+# START BACKGROUND WORKERS
+# -----------------------------
+start_cleanup_worker()
 
-        gr.HTML("""
-        <div class="yt-banner">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#ea4335">
-                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-            </svg>
-            <p>Subscribe to <a href="https://www.youtube.com/@neuralfalcon/" target="_blank">Neural Falcon on YouTube</a> for more AI tools and tutorials</p>
+# -----------------------------
+# UI
+# -----------------------------
+
+with gr.Blocks(
+    theme=gr.themes.Base(),
+    css=css,
+    title="Remove Silence"
+) as demo:
+
+    # TOPBAR
+    gr.HTML("""
+    <div class="topbar">
+        <div class="logo">
+            <div class="logo-icon">R</div>
+            <div class="logo-text">Remove Silence</div>
         </div>
-        """)
-
-        gr.HTML("""
-        <div class="site-header">
-            <div class="header-title">REMOVE <span>SILENCE</span></div>
-            <div class="header-sub">Drop your audio, get it tight - perfect for Shorts, TikTok &amp; Reels</div>
-            <div class="header-badges">
-                <span class="hbadge">100% Free</span>
-                <span class="hbadge">No Sign-up</span>
-                <span class="hbadge">AI Powered</span>
-            </div>
+        <div class="nav">
+            <a href="https://www.youtube.com/@neuralfalcon/" target="_blank" class="nav-yt">Subscribe YouTube</a>
+            <a href="https://ko-fi.com/neuralfalcon" target="_blank" class="nav-kofi">Donate</a>
+            <a href="https://github.com/NeuralFalconYT/Remove-Silence-From-Audio" target="_blank">GitHub</a>
+            <a href="mailto:NeuralFalcon@proton.me" target="_blank">Mail</a>
+            <a href="https://x.com/NeuralFalcon" target="_blank">X</a>
         </div>
-        """)
+    </div>
+    """)
 
-        with gr.Row(equal_height=False):
+    # HERO
+    gr.HTML("""
+    <div class="hero">
+        <h1>REMOVE <span>SILENCE</span></h1>
+        <p>Drop your audio and instantly clean pauses for Shorts, TikTok & Reels</p>
+        <div class="badges">
+            <div class="badge">100% Free</div>
+            <div class="badge">No Sign-Up</div>
+            <div class="badge">AI Powered</div>
+        </div>
+    </div>
+    """)
 
-            with gr.Column(scale=1):
-                gr.HTML('<div class="section-tag">Upload</div>')
-                audio_input = gr.Audio(
-                    label="",
+    with gr.Row(equal_height=False, elem_classes="side-by-side"):
+
+        # LEFT PANEL (UPLOAD) - Adjusted min_width to stretch beautifully in the new wide container
+        with gr.Column(scale=1, min_width=450):
+            with gr.Group(elem_classes="panel"):
+                gr.HTML('<div class="section-title">Upload & Settings</div>')
+
+                input_audio = gr.Audio(
                     type="filepath",
-                    sources=["upload", "microphone"],
-                    show_label=False,
-                )
-
-                gr.HTML('<div class="hdivider"></div>')
-                gr.HTML('<div class="section-tag">Mode</div>')
-
-                method_choice = gr.Radio(
-                    choices=["Super Strict", "Human Speech Only (AI)"],
-                    value="Super Strict",
                     label="",
-                    show_label=False,
-                    elem_classes=["gr-radio-group"]
+                    show_label=False
                 )
 
-                gr.HTML('<div class="hdivider"></div>')
-                silence_threshold = gr.Number(
-                                    label="Keep Silence (seconds)",
-                                    value=0.05,
-                                    info="Lower = tighter cut. For Shorts/TikTok try 0.03-0.05"
-                                )
-  
-                gr.HTML('<div style="height:12px;"></div>')
-
-                with gr.Row(elem_classes=["submit-row"]):
-                    submit_btn = gr.Button(
-                        "Remove Silence",
-                        variant="primary",
-                        size="lg"
+                with gr.Row():
+                    mode = gr.Dropdown(choices=["Super Strict", "Human Speech Only (AI)"], value="Super Strict", label="Mode")
+                    keep_silence = gr.Textbox(
+                        value="0.05",
+                        label="Keep Silence (sec)"
                     )
 
-            with gr.Column(scale=1):
-                gr.HTML('<div class="section-tag">Result</div>')
+                # Blue submit button
+                process_btn = gr.Button("Remove Silence", elem_id="process-btn")
 
-                audio_output = gr.Audio(
-                    label="Processed Audio",
-                    show_label=True,
+        # RIGHT PANEL (RESULT)
+        with gr.Column(scale=1, min_width=450):
+            with gr.Group(elem_classes="panel"):
+                gr.HTML('<div class="section-title">Result</div>')
+
+                output_audio = gr.Audio(
+                    label="Play Audio",
+                    show_label=False
                 )
-
-                file_output = gr.File(
-                    label="Download",
-                    show_label=True,
+                
+                download_audio = gr.File(
+                    label="Download Audio",
+                    show_label=False
                 )
+                
+                stats_html = gr.HTML()
 
-                result_stats = gr.HTML(
-                    value=EMPTY_RESULT,
-                    elem_id="result-html"
-                )
+    # PROCESS
+    process_btn.click(
+        fn=process_audio,
+        inputs=[input_audio, keep_silence, mode],
+        outputs=[output_audio, download_audio, stats_html]
+    )
 
-        gr.HTML("""
-        <div class="site-footer">
-            <div class="footer-content">
-                <span class="footer-formats">Supported: MP3, WAV, OGG, FLAC, M4A, and more</span>
-                <div class="footer-contact">
-                    <a href="mailto:NeuralFalcon@proton.me" title="Email">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                        Email
-                    </a>
-                    <div class="footer-divider"></div>
-                    <a href="https://x.com/NeuralFalcon" target="_blank" title="X / Twitter">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-                        Twitter
-                    </a>
-                    <div class="footer-divider"></div>
-                    <a href="https://github.com/NeuralFalconYT/Remove-Silence-From-Audio" target="_blank" title="Install Locally">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                        GitHub
-                    </a>
-                </div>
-            </div>
-        </div>
-        """)
-
-        def process_wrapper(audio_file, seconds, method):
-            return process_audio(audio_file, seconds, method)
-
-        submit_btn.click(
-            fn=process_wrapper,
-            inputs=[audio_input, silence_threshold, method_choice],
-            outputs=[audio_output, file_output, result_stats]
-        )
-
-    return demo
-
-
-# ─── Launch ───────────────────────────────────────────────────────────────────
-
-start_cleanup_worker()
-demo = ui()
-demo.queue().launch()
+demo.launch()

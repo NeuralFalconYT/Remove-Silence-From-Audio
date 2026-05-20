@@ -242,31 +242,31 @@ def process_audio(audio_file, seconds, method):
         mode_label = "SUPER STRICT" if method == "Super Strict" else "HUMAN SPEECH (AI)"
 
         result_html = f"""
-<div style="margin-top:14px; border:1px solid #3a3c42; border-radius:10px; overflow:hidden; background:#2b2d31; box-shadow:0 2px 6px rgba(0,0,0,0.3);">
+<div style="margin-top:10px; border:1px solid #2a3a5c; border-radius:10px; overflow:hidden; background:#1e2a4a; box-shadow:0 2px 8px rgba(0,0,0,0.25);">
     <div style="display:grid; grid-template-columns:1fr 1fr 1fr;">
-        <div style="padding:18px 14px; text-align:center; border-right:1px solid #3a3c42;">
-            <div style="font-size:11px; letter-spacing:0.05em; color:#b5bac1; text-transform:uppercase; margin-bottom:8px; font-family:'Inter',sans-serif; font-weight:500;">Original</div>
-            <div style="font-size:20px; font-weight:600; color:#f2f3f5; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(before)}</div>
+        <div style="padding:14px 12px; text-align:center; border-right:1px solid #2a3a5c;">
+            <div style="font-size:11px; letter-spacing:0.05em; color:#8899b4; text-transform:uppercase; margin-bottom:6px; font-family:'Inter',sans-serif; font-weight:500;">Original</div>
+            <div style="font-size:19px; font-weight:600; color:#e8eaf0; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(before)}</div>
         </div>
-        <div style="padding:18px 14px; text-align:center; border-right:1px solid #3a3c42; background:#313338;">
-            <div style="font-size:11px; letter-spacing:0.05em; color:#b5bac1; text-transform:uppercase; margin-bottom:8px; font-family:'Inter',sans-serif; font-weight:500;">New</div>
-            <div style="font-size:20px; font-weight:600; color:#5865f2; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(after)}</div>
+        <div style="padding:14px 12px; text-align:center; border-right:1px solid #2a3a5c; background:#1a2542;">
+            <div style="font-size:11px; letter-spacing:0.05em; color:#8899b4; text-transform:uppercase; margin-bottom:6px; font-family:'Inter',sans-serif; font-weight:500;">New</div>
+            <div style="font-size:19px; font-weight:600; color:#4285f4; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{fmt(after)}</div>
         </div>
-        <div style="padding:18px 14px; text-align:center;">
-            <div style="font-size:11px; letter-spacing:0.05em; color:#b5bac1; text-transform:uppercase; margin-bottom:8px; font-family:'Inter',sans-serif; font-weight:500;">Removed</div>
-            <div style="font-size:20px; font-weight:600; color:#ed4245; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{percent:.1f}%</div>
-            <div style="font-size:12px; color:#6d7076; margin-top:4px; font-family:'Inter',sans-serif;">{fmt(removed)}</div>
+        <div style="padding:14px 12px; text-align:center;">
+            <div style="font-size:11px; letter-spacing:0.05em; color:#8899b4; text-transform:uppercase; margin-bottom:6px; font-family:'Inter',sans-serif; font-weight:500;">Removed</div>
+            <div style="font-size:19px; font-weight:600; color:#ea4335; letter-spacing:0.01em; font-family:'Inter',sans-serif;">{percent:.1f}%</div>
+            <div style="font-size:12px; color:#6b7a94; margin-top:3px; font-family:'Inter',sans-serif;">{fmt(removed)}</div>
         </div>
     </div>
-    <div style="padding:8px 14px; background:#313338; border-top:1px solid #3a3c42; text-align:right;">
-        <span style="font-family:'Inter',sans-serif; font-size:11px; color:#6d7076; letter-spacing:0.02em;">Mode: {mode_label}</span>
+    <div style="padding:6px 12px; background:#1a2542; border-top:1px solid #2a3a5c; text-align:right;">
+        <span style="font-family:'Inter',sans-serif; font-size:11px; color:#6b7a94; letter-spacing:0.02em;">Mode: {mode_label}</span>
     </div>
 </div>
 """
         return output_audio_file, output_audio_file, result_html
 
     except Exception as e:
-        return None, None, f"<p style='color:#ed4245; font-family:Inter,sans-serif; font-size:13px; margin-top:12px; padding:12px 16px; background:#2d1214; border-radius:8px; border:1px solid #5c2b2e;'>Error: {str(e)}</p>"
+        return None, None, f"<p style='color:#ea4335; font-family:Inter,sans-serif; font-size:13px; margin-top:10px; padding:10px 14px; background:#2a1a1a; border-radius:8px; border:1px solid #4a2020;'>Error: {str(e)}</p>"
 
 
 # ─── UI ───────────────────────────────────────────────────────────────────────
@@ -279,82 +279,82 @@ def ui():
         font=[gr.themes.GoogleFont("Inter"), "sans-serif"],
         font_mono=[gr.themes.GoogleFont("Inter"), "monospace"],
     ).set(
-        body_background_fill="#1e1f22",
-        body_background_fill_dark="#1e1f22",
-        block_background_fill="#2b2d31",
-        block_background_fill_dark="#2b2d31",
+        body_background_fill="#1a1a2e",
+        body_background_fill_dark="#1a1a2e",
+        block_background_fill="#212545",
+        block_background_fill_dark="#212545",
         block_border_width="1px",
-        block_border_color="#3a3c42",
-        block_border_color_dark="#3a3c42",
+        block_border_color="#2a3a5c",
+        block_border_color_dark="#2a3a5c",
         block_radius="10px",
-        block_shadow="0 2px 6px rgba(0,0,0,0.3)",
-        block_shadow_dark="0 2px 6px rgba(0,0,0,0.3)",
-        block_label_background_fill="#2b2d31",
-        block_label_background_fill_dark="#2b2d31",
+        block_shadow="0 2px 8px rgba(0,0,0,0.2)",
+        block_shadow_dark="0 2px 8px rgba(0,0,0,0.2)",
+        block_label_background_fill="#212545",
+        block_label_background_fill_dark="#212545",
         block_label_border_width="0px",
-        block_label_text_color="#b5bac1",
-        block_label_text_color_dark="#b5bac1",
+        block_label_text_color="#8899b4",
+        block_label_text_color_dark="#8899b4",
         block_label_text_size="13px",
-        block_title_text_color="#f2f3f5",
-        block_title_text_color_dark="#f2f3f5",
+        block_title_text_color="#e8eaf0",
+        block_title_text_color_dark="#e8eaf0",
         block_title_text_size="14px",
-        body_text_color="#e0e1e5",
-        body_text_color_dark="#e0e1e5",
-        body_text_color_subdued="#b5bac1",
-        body_text_color_subdued_dark="#b5bac1",
+        body_text_color="#e0e4ef",
+        body_text_color_dark="#e0e4ef",
+        body_text_color_subdued="#8899b4",
+        body_text_color_subdued_dark="#8899b4",
         body_text_size="14px",
-        input_background_fill="#383a40",
-        input_background_fill_dark="#383a40",
-        input_background_fill_focus="#404249",
-        input_background_fill_focus_dark="#404249",
-        input_border_color="#4a4c52",
-        input_border_color_dark="#4a4c52",
-        input_border_color_focus="#5865f2",
-        input_border_color_focus_dark="#5865f2",
+        input_background_fill="#1e2a4a",
+        input_background_fill_dark="#1e2a4a",
+        input_background_fill_focus="#243052",
+        input_background_fill_focus_dark="#243052",
+        input_border_color="#2a3a5c",
+        input_border_color_dark="#2a3a5c",
+        input_border_color_focus="#4285f4",
+        input_border_color_focus_dark="#4285f4",
         input_border_width="1px",
         input_radius="8px",
         input_shadow="none",
         input_shadow_dark="none",
         input_text_size="14px",
-        input_placeholder_color="#6d7076",
-        input_placeholder_color_dark="#6d7076",
-        button_primary_background_fill="#5865f2",
-        button_primary_background_fill_dark="#5865f2",
-        button_primary_background_fill_hover="#4752c4",
-        button_primary_background_fill_hover_dark="#4752c4",
+        input_placeholder_color="#6b7a94",
+        input_placeholder_color_dark="#6b7a94",
+        button_primary_background_fill="#4285f4",
+        button_primary_background_fill_dark="#4285f4",
+        button_primary_background_fill_hover="#3b78e7",
+        button_primary_background_fill_hover_dark="#3b78e7",
         button_primary_text_color="#ffffff",
         button_primary_text_color_dark="#ffffff",
         button_primary_border_color="transparent",
         button_primary_border_color_dark="transparent",
-        button_secondary_background_fill="#383a40",
-        button_secondary_background_fill_dark="#383a40",
-        button_secondary_background_fill_hover="#404249",
-        button_secondary_background_fill_hover_dark="#404249",
-        button_secondary_text_color="#e0e1e5",
-        button_secondary_text_color_dark="#e0e1e5",
-        button_secondary_border_color="#4a4c52",
-        button_secondary_border_color_dark="#4a4c52",
+        button_secondary_background_fill="#1e2a4a",
+        button_secondary_background_fill_dark="#1e2a4a",
+        button_secondary_background_fill_hover="#243052",
+        button_secondary_background_fill_hover_dark="#243052",
+        button_secondary_text_color="#e0e4ef",
+        button_secondary_text_color_dark="#e0e4ef",
+        button_secondary_border_color="#2a3a5c",
+        button_secondary_border_color_dark="#2a3a5c",
         button_large_radius="8px",
         button_large_text_size="14px",
-        button_large_padding="12px 32px",
-        slider_color="#5865f2",
-        slider_color_dark="#5865f2",
-        checkbox_background_color="#383a40",
-        checkbox_background_color_dark="#383a40",
-        checkbox_border_color="#4a4c52",
-        checkbox_border_color_dark="#4a4c52",
-        checkbox_border_color_selected="#5865f2",
-        checkbox_border_color_selected_dark="#5865f2",
-        checkbox_label_background_fill="#2b2d31",
-        checkbox_label_background_fill_dark="#2b2d31",
-        checkbox_label_background_fill_selected="#3c4270",
-        checkbox_label_background_fill_selected_dark="#3c4270",
-        checkbox_label_border_color="#4a4c52",
-        checkbox_label_border_color_dark="#4a4c52",
-        checkbox_label_border_color_hover="#5865f2",
-        checkbox_label_border_color_hover_dark="#5865f2",
-        checkbox_label_text_color="#e0e1e5",
-        checkbox_label_text_color_dark="#e0e1e5",
+        button_large_padding="10px 28px",
+        slider_color="#4285f4",
+        slider_color_dark="#4285f4",
+        checkbox_background_color="#1e2a4a",
+        checkbox_background_color_dark="#1e2a4a",
+        checkbox_border_color="#2a3a5c",
+        checkbox_border_color_dark="#2a3a5c",
+        checkbox_border_color_selected="#4285f4",
+        checkbox_border_color_selected_dark="#4285f4",
+        checkbox_label_background_fill="#212545",
+        checkbox_label_background_fill_dark="#212545",
+        checkbox_label_background_fill_selected="#1e3a6e",
+        checkbox_label_background_fill_selected_dark="#1e3a6e",
+        checkbox_label_border_color="#2a3a5c",
+        checkbox_label_border_color_dark="#2a3a5c",
+        checkbox_label_border_color_hover="#4285f4",
+        checkbox_label_border_color_hover_dark="#4285f4",
+        checkbox_label_text_color="#e0e4ef",
+        checkbox_label_text_color_dark="#e0e4ef",
         checkbox_label_text_color_selected="#ffffff",
         checkbox_label_text_color_selected_dark="#ffffff",
     )
@@ -363,41 +363,41 @@ def ui():
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
     .gradio-container {
-        max-width: 900px !important;
+        max-width: 880px !important;
         margin: 0 auto !important;
-        padding: 0 24px !important;
+        padding: 0 20px !important;
         box-sizing: border-box !important;
-        background: #1e1f22 !important;
+        background: #1a1a2e !important;
     }
 
     body {
-        background: #1e1f22 !important;
+        background: #1a1a2e !important;
     }
 
-    /* ── Top Banner (YouTube + Ko-fi) ── */
+    /* ── Top Banner ── */
     .top-banner {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
+        gap: 14px;
         flex-wrap: wrap;
-        padding: 8px 16px;
-        background: #2b2d31;
-        border: 1px solid #3a3c42;
-        border-radius: 8px;
-        margin-bottom: 12px;
-        margin-top: 8px;
+        padding: 6px 14px;
+        background: #212545;
+        border: 1px solid #2a3a5c;
+        border-radius: 6px;
+        margin-bottom: 8px;
+        margin-top: 6px;
     }
 
     .top-banner a {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 5px;
         font-family: 'Inter', sans-serif;
-        font-size: 12px;
+        font-size: 11px;
         font-weight: 500;
         text-decoration: none;
-        color: #b5bac1;
+        color: #8899b4;
         transition: color 0.15s;
     }
 
@@ -407,35 +407,35 @@ def ui():
 
     .top-banner .divider {
         width: 1px;
-        height: 14px;
-        background: #4a4c52;
+        height: 12px;
+        background: #2a3a5c;
     }
 
     /* ── Header ── */
     .site-header {
-        padding: 12px 0 10px;
+        padding: 8px 0 6px;
         text-align: center;
     }
 
     .header-title {
         font-family: 'Inter', sans-serif;
-        font-size: clamp(22px, 4vw, 30px);
+        font-size: clamp(20px, 3.5vw, 26px);
         font-weight: 700;
-        color: #f2f3f5;
+        color: #e8eaf0;
         letter-spacing: -0.02em;
         line-height: 1.2;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
     }
 
     .header-title span {
-        color: #5865f2;
+        color: #4285f4;
     }
 
     .header-sub {
         font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        color: #b5bac1;
-        margin-bottom: 8px;
+        font-size: 12px;
+        color: #8899b4;
+        margin-bottom: 6px;
         font-weight: 400;
     }
 
@@ -448,13 +448,13 @@ def ui():
 
     .hbadge {
         font-family: 'Inter', sans-serif;
-        font-size: 11px;
+        font-size: 10px;
         font-weight: 500;
-        padding: 3px 10px;
-        border: 1px solid #4a4c52;
-        color: #b5bac1;
-        border-radius: 14px;
-        background: #383a40;
+        padding: 2px 9px;
+        border: 1px solid #2a3a5c;
+        color: #8899b4;
+        border-radius: 12px;
+        background: #1e2a4a;
     }
 
     /* ── Section labels ── */
@@ -463,18 +463,18 @@ def ui():
         font-size: 11px;
         font-weight: 600;
         letter-spacing: 0.04em;
-        color: #b5bac1;
+        color: #8899b4;
         text-transform: uppercase;
-        margin-bottom: 8px;
-        padding-bottom: 6px;
-        border-bottom: 1px solid #3a3c42;
+        margin-bottom: 6px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid #2a3a5c;
     }
 
     /* ── Radio ── */
-    .gr-radio-group .wrap { gap: 8px !important; }
+    .gr-radio-group .wrap { gap: 6px !important; }
     .gr-radio-group label {
         border-radius: 6px !important;
-        padding: 8px 14px !important;
+        padding: 6px 12px !important;
         font-size: 13px !important;
         font-family: 'Inter', sans-serif !important;
         font-weight: 500 !important;
@@ -484,7 +484,7 @@ def ui():
     /* ── Submit button ── */
     .submit-row button {
         width: 100% !important;
-        height: 44px !important;
+        height: 42px !important;
         font-size: 14px !important;
         font-weight: 600 !important;
         letter-spacing: 0.02em !important;
@@ -495,14 +495,7 @@ def ui():
 
     .submit-row button:hover {
         transform: translateY(-1px) !important;
-        box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3) !important;
-    }
-
-    /* ── Divider ── */
-    .hdivider {
-        height: 1px;
-        background: #3a3c42;
-        margin: 14px 0;
+        box-shadow: 0 4px 14px rgba(66, 133, 244, 0.35) !important;
     }
 
     /* ── Result placeholder ── */
@@ -510,26 +503,26 @@ def ui():
         display: flex;
         align-items: center;
         justify-content: center;
-        min-height: 60px;
-        border: 1px dashed #4a4c52;
+        min-height: 50px;
+        border: 1px dashed #2a3a5c;
         border-radius: 8px;
-        margin-top: 10px;
-        background: #2b2d31;
+        margin-top: 8px;
+        background: #1e2a4a;
     }
 
     .result-empty p {
         font-family: 'Inter', sans-serif;
-        font-size: 13px;
-        color: #6d7076;
+        font-size: 12px;
+        color: #6b7a94;
         text-align: center;
         font-weight: 400;
     }
 
-    /* ── Footer / Contact Section ── */
+    /* ── Footer ── */
     .site-footer {
-        border-top: 1px solid #3a3c42;
-        padding: 20px 0 28px;
-        margin-top: 28px;
+        border-top: 1px solid #2a3a5c;
+        padding: 14px 0 20px;
+        margin-top: 16px;
     }
 
     .footer-content {
@@ -537,47 +530,52 @@ def ui():
         justify-content: space-between;
         align-items: flex-start;
         flex-wrap: wrap;
-        gap: 16px;
+        gap: 12px;
     }
 
     .footer-formats {
         font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        color: #6d7076;
+        font-size: 11px;
+        color: #6b7a94;
         font-weight: 400;
     }
 
     .footer-contact {
         display: flex;
-        gap: 14px;
+        gap: 12px;
         flex-wrap: wrap;
         align-items: center;
     }
 
     .footer-contact a {
         font-family: 'Inter', sans-serif;
-        font-size: 12px;
-        color: #b5bac1;
+        font-size: 11px;
+        color: #8899b4;
         text-decoration: none;
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 4px;
         transition: color 0.15s;
         font-weight: 500;
     }
 
     .footer-contact a:hover {
-        color: #5865f2;
+        color: #4285f4;
     }
 
     .footer-divider {
         width: 1px;
-        height: 14px;
-        background: #4a4c52;
+        height: 12px;
+        background: #2a3a5c;
     }
 
-    .gr-row { gap: 20px !important; }
+    .gr-row { gap: 16px !important; }
     #result-html > div { margin: 0 !important; }
+
+    /* Reduce overall component spacing */
+    .gr-block { padding: 10px !important; }
+    .gr-padded { padding: 10px !important; }
+    .gr-form { gap: 6px !important; }
     """
 
     EMPTY_RESULT = """
@@ -591,14 +589,14 @@ def ui():
         gr.HTML("""
         <div class="top-banner">
             <a href="https://www.youtube.com/@neuralfalcon/" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff0000">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#ff0000">
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                 </svg>
-                Subscribe on YouTube
+                Subscribe
             </a>
             <span class="divider"></span>
             <a href="https://ko-fi.com/neuralfalcon" target="_blank">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#ff5e5b">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="#ff5e5b">
                     <path d="M23.881 8.948c-.773-4.085-4.859-4.593-4.859-4.593H.723c-.604 0-.679.798-.679.798s-.082 7.324-.022 11.822c.164 2.424 2.586 2.672 2.586 2.672s8.267-.023 11.966-.049c2.438-.426 2.683-2.566 2.658-3.734 4.352.24 7.422-2.831 6.649-6.916zm-11.062 3.511c-1.246 1.453-4.011 3.976-4.011 3.976s-.121.119-.31.023c-.076-.057-.108-.09-.108-.09-.443-.441-3.368-3.049-4.034-3.954-.709-.965-1.041-2.7-.091-3.71.951-1.01 3.005-1.086 4.363.407 0 0 1.565-1.782 3.468-.963 1.904.82 1.832 3.011.723 4.311zm6.173.478c-.928.116-1.682.028-1.682.028V7.284h1.77s1.971.551 1.971 2.638c0 1.913-.985 2.667-2.059 3.015z"/>
                 </svg>
                 Buy me a coffee
@@ -609,7 +607,7 @@ def ui():
         gr.HTML("""
         <div class="site-header">
             <div class="header-title">REMOVE <span>SILENCE</span></div>
-            <div class="header-sub">Drop your audio, get it tight - perfect for Shorts, TikTok &amp; Reels</div>
+            <div class="header-sub">Drop your audio, get it tight -- perfect for Shorts, TikTok &amp; Reels</div>
             <div class="header-badges">
                 <span class="hbadge">100% Free</span>
                 <span class="hbadge">No Sign-up</span>
@@ -629,8 +627,7 @@ def ui():
                     show_label=False,
                 )
 
-                gr.HTML('<div class="hdivider"></div>')
-                gr.HTML('<div class="section-tag">Mode</div>')
+                gr.HTML('<div class="section-tag" style="margin-top:8px;">Mode</div>')
 
                 method_choice = gr.Radio(
                     choices=["Super Strict", "Human Speech Only (AI)"],
@@ -640,14 +637,11 @@ def ui():
                     elem_classes=["gr-radio-group"]
                 )
 
-                gr.HTML('<div class="hdivider"></div>')
                 silence_threshold = gr.Number(
-                                    label="Keep Silence (seconds)",
-                                    value=0.05,
-                                    info="Lower = tighter cut. For Shorts/TikTok try 0.03-0.05"
-                                )
-  
-                gr.HTML('<div style="height:12px;"></div>')
+                    label="Keep Silence (seconds)",
+                    value=0.05,
+                    info="Lower = tighter cut. For Shorts/TikTok try 0.03-0.05"
+                )
 
                 with gr.Row(elem_classes=["submit-row"]):
                     submit_btn = gr.Button(
@@ -680,17 +674,17 @@ def ui():
                 <span class="footer-formats">Supported: MP3, WAV, OGG, FLAC, M4A, and more</span>
                 <div class="footer-contact">
                     <a href="mailto:NeuralFalcon@proton.me" title="Email">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                         Email
                     </a>
                     <div class="footer-divider"></div>
                     <a href="https://x.com/NeuralFalcon" target="_blank" title="X / Twitter">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
                         Twitter
                     </a>
                     <div class="footer-divider"></div>
-                    <a href="https://github.com/NeuralFalconYT/Remove-Silence-From-Audio" target="_blank" title="Install Locally">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    <a href="https://github.com/NeuralFalconYT/Remove-Silence-From-Audio" target="_blank" title="GitHub">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
                         GitHub
                     </a>
                 </div>

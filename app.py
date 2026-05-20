@@ -93,24 +93,46 @@ def start_cleanup_worker(interval=3600):
 def convert_to_wav(audio_path):
     if not os.path.isfile(audio_path):
         return None
+
+    # Get extension
+    ext = os.path.splitext(audio_path)[1].lower()
+
+    # If already mp3 or wav, return original file
+    if ext in [".mp3", ".wav"]:
+        return audio_path
+
+    # Clean filename
     file_name = os.path.splitext(os.path.basename(audio_path))[0]
     clean_name = re.sub(r'[^a-zA-Z0-9]+', '_', file_name)
     clean_name = re.sub(r'_+', '_', clean_name).strip('_')
+
+    # Output wav path
     wav_path = os.path.join(
         os.path.dirname(audio_path),
         f"{clean_name}_tmp.wav"
     )
+
     try:
         subprocess.run(
-            ["ffmpeg", "-y", "-i", audio_path, "-ar", "16000", "-ac", "1", wav_path],
+            [
+                "ffmpeg",
+                "-y",
+                "-i", audio_path,
+                "-ar", "16000",
+                "-ac", "1",
+                wav_path
+            ],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             check=True
         )
+
         if os.path.isfile(wav_path) and os.path.getsize(wav_path) > 0:
             return wav_path
-    except Exception as e:
+
+    except Exception:
         pass
+
     return None
 
 
